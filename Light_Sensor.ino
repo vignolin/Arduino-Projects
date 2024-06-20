@@ -1,88 +1,81 @@
 /* ========================================================================================================
 
-
+// CODE BY @vignolin on GIThub
 
 ======================================================================================================== */
 
-
-// ========================================================================================================
-// --- Bibliotecas Auxiliares ---
-#include <virtuabotixRTC.h>                    //biblioteca para o RTC DS1302      
+// --- Libraries ---
+#include <virtuabotixRTC.h>                    //RTC DS1302      
 #include <Wire.h>
 #include <Arduino.h>
 #include <TM1637Display.h>
 
 
-// ========================================================================================================
-// --- Mapeamento de Hardware ---
-#define   clk   6
-#define   dat   7
-#define   rst   8
-#define CLK 2
-#define DIO 3
-int verde = 13;
-int vermelho = 12;
 
-// ========================================================================================================
-// --- Constantes Auxiliares ---
-#define   segL       00
+// --- Hardware Mapping ---
+#define   clk   6   // RTC
+#define   dat   7   // RTC
+#define   rst   8   // RTC
+#define CLK 2   // 7 segment display
+#define DIO 3   7 segment display
+int green = 13;
+int red = 12;
+
+
+// --- Constants  ---
+#define   segL       00 // set the time (secs, min, hours, dayWeek, dMonth, month, year)
 #define   minL       14
 #define   horL       16
 #define   d_semL      7
 #define   d_mesL     20
 #define   mesL        4
 #define   anoL     2024
+int points = 0;
 
-int pontos = 0;
 
-// ========================================================================================================
-// --- Declaração de Objetos ---
-virtuabotixRTC   myRTC(clk, dat, rst);         //declara objeto para o RTC
-
+// --- Objets ---
+virtuabotixRTC   myRTC(clk, dat, rst);         //RTC
 TM1637Display display(CLK, DIO);
-// ========================================================================================================
-// --- Protótipo das Funções ---
+
+
+// --- Functions ---
 void DS1302();
 void week(int dayW);
 
 
-// ========================================================================================================
-// --- Configurações Iniciais ---
+
+// --- Configurations ---
 void setup()  
 {   
    display.setBrightness(0x0f);
   pinMode(verde, OUTPUT);
   pinMode(vermelho, OUTPUT);
 
-  //lcd.noBacklight(); // DESLIGA A ILUMINAÇÃO DO DISPLAY
+  
   Serial.begin(9600);
 
-  //Faça upload do código para o Arduino uma vez para carregar os
-  //dados iniciai no RTC.
-  //Após, comente a linha abaixo e faça upload novamente. 
+  //Upload once for setting the time 
+  //Then, comment the line below and re-upload the code 
   myRTC.setDS1302Time(segL, minL, horL, d_semL, d_mesL, mesL, anoL);
   
-} //end setup
+} 
 
 
-// ========================================================================================================
-// --- Loop Infinito ---
+
+
 void loop()  
 {
-
-
    DS1302();
-  
-} //end loop
+} 
 
 
 // ========================================================================================================
-// --- Desenvolvimento das Funções ---
+// --- Functions 2 ---
 void DS1302()
 {
-  myRTC.updateTime();         //faz leitura do DS1302
+  myRTC.updateTime();         //RTC DS1302
 
-  // Imprime informações
+  // Prints data
   Serial.println(" -> ");
   Serial.print(myRTC.dayofweek);
   Serial.print(" | ");
@@ -118,18 +111,18 @@ void DS1302()
   
   display.showNumberDec(pontos, true);
   if(analogValue < 820){
-    digitalWrite(verde, HIGH); // accendere il LED
+    digitalWrite(green, HIGH); // accendere il LED
     pontos++;
-    digitalWrite(vermelho, LOW);
+    digitalWrite(red, LOW);
   }
   
   if(analogValue > 900){
-    digitalWrite(vermelho, HIGH); // accendere il LED
-    digitalWrite(verde, LOW);
+    digitalWrite(red, HIGH); // accendere il LED
+    digitalWrite(green, LOW);
   }
   delay(500);
   
-} //end DS1302
+} 
 
  
 void week(int dayW)
@@ -137,13 +130,13 @@ void week(int dayW)
   
   switch(dayW)
   {
-    case 1: Serial.print("Dom"); break;
-    case 2: Serial.print("Seg"); break;
-    case 3: Serial.print("Ter"); break;
-    case 4: Serial.print("Qua"); break;
-    case 5: Serial.print("Qui"); break;
-    case 6: Serial.print("Sex"); break;
-    case 7: Serial.print("Sab"); break;
+    case 1: Serial.print("Sun"); break;
+    case 2: Serial.print("Mon"); break;
+    case 3: Serial.print("Tue"); break;
+    case 4: Serial.print("Wed"); break;
+    case 5: Serial.print("Thu"); break;
+    case 6: Serial.print("Fri"); break;
+    case 7: Serial.print("Sat"); break;
    
   } //end switch
   
